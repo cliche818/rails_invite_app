@@ -1,0 +1,6 @@
+- alert_classes = { error: "danger", success: "success" }
+- flash.each do |type, messages|
+  - [messages].flatten.each do |message|
+    %div{ class: "alert alert-#{alert_classes[type.to_sym] || type}" }
+      .container
+        = message

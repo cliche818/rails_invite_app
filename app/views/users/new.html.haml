@@ -1,0 +1,15 @@
+%h1 Sign up
+
+%p Please enter your name and email to sign up
+
+.row
+  .col
+    = form_with model: @user, url: user_path do |f|
+      .form-group
+        = f.text_field :name, class: "form-control", placeholder: "Name"
+      .form-group
+        = f.text_field :email, class: "form-control", placeholder: "E-mail"
+      = f.submit "Signup", class: "btn btn-primary"
+      = link_to "or login", new_session_path, class: "btn btn-link"
+
+  .col

@@ -1,0 +1,22 @@
+!!!
+%html
+  %head
+    %title Let Me In
+    = csrf_meta_tags
+    = csp_meta_tag
+    = stylesheet_link_tag    "application", media: "all", "data-turbolinks-track": "reload"
+    = javascript_include_tag "application", "data-turbolinks-track": "reload"
+    = stylesheet_link_tag "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+
+  %body
+    %nav.navbar.navbar-light.bg-light
+      .container
+        = link_to "Home", root_path, class: "navbar-brand"
+        - if logged_in?
+          .navbar-text
+            = link_to "Logout", session_path, method: :delete
+
+    = render partial: "layouts/alert"
+
+    .container.pt-5.pb-5
+      = yield
