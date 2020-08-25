@@ -11,8 +11,19 @@ class UsersController < ApplicationController
 
     if @user.save
       session[:user_id] = @user.id
-      flash[:success] = "Thank you for signing up"
-      redirect_to action: :show
+      byebug
+
+      if params[:invite][:invite_type] && params[:invite][:invite_code]
+        company_invite = CompanyInvite.find_by(invite_code: params[:invite][:invite_code])
+        company = Company.find_by(id: company_invite.company_id)
+        @user.companies << company
+
+        flash[:success] = "Welcome! You are now a member of #{company.name}"
+        redirect_to action: :show
+      else
+        flash[:success] = "Thank you for signing up"
+        redirect_to action: :show
+      end
     else
       flash[:error] = "Please complete all required info and try again"
       redirect_to action: :new

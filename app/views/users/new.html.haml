@@ -9,6 +9,13 @@
         = f.text_field :name, class: "form-control", placeholder: "Name"
       .form-group
         = f.text_field :email, class: "form-control", placeholder: "E-mail"
+
+      - if params["invite_type"] && params["invite_code"]
+        %p You are using an invite:
+        .form-group
+          %input#invite_invite_type{name: "invite[invite_type]", type: "hidden", value: "CompanyInvite"}
+        .form-group
+          %input#invite_invite_code{name: "invite[invite_code]", class: "form-control", value: params[:invite_code]}
       = f.submit "Signup", class: "btn btn-primary"
       = link_to "or login", new_session_path, class: "btn btn-link"
 

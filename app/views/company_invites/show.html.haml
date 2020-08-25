@@ -1,0 +1,5 @@
+%p This is an company invite for #{@company.name}!
+
+%p Please sign in to join!
+= link_to "sign in", new_user_path(invite_type: 'CompanyInvite', invite_code: @invite.invite_code), class: "btn btn-link"
+= link_to "or log in", new_session_path(invite_type: 'CompanyInvite', invite_code: @invite.invite_code), class: "btn btn-link"
