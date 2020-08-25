@@ -35,12 +35,12 @@ RSpec.describe UsersController, type: :controller do
 
         post :create, params: { user: { name: "Joanne", email: "joanne@test.hoost" }, invite: {invite_type: "CompanyInvite", invite_code: company_invite.invite_code} }
 
-        expect(flash[:success]).to eq("Welcome! You are now a member of ACME Inc.")
+        expect(flash[:success]).to eq("Welcome! You are now a member of BBBB Inc.")
         expect(response).to redirect_to(user_path)
 
         user = User.find_by(email: "joanne@test.hoost")
         expect(user.companies.count).to eq(1)
-        expect(user.companies.first.name).to eq("ACME Inc.")
+        expect(user.companies.first.name).to eq("BBBB Inc.")
 
         company_invite.reload
         expect(company_invite.status).to eq(CompanyInvite.statuses[:used])

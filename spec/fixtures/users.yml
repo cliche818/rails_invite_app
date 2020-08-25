@@ -1,3 +1,7 @@
 default:
   name: Jane Doe
   email: jane@test.host
+another_user:
+  name: John Doe
+  email: john@test.host
+

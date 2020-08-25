@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe SessionsController, type: :controller do
-  let(:user) { users(:default) }
+  let(:user) { users(:another_user) }
 
   describe "GET new" do
     it "render page if not logged in" do
@@ -27,6 +27,25 @@ RSpec.describe SessionsController, type: :controller do
       post :create, params: { session: { email: "bogus@test.host" } }
       expect(flash[:error]).to eq("Failed to log in, please try again")
       expect(response).to redirect_to(new_session_path)
+    end
+
+    describe "joining company via company invite" do
+      it "adds the company from the invite to the list of companies the user has" do
+        company_invite = company_invites(:unused_invite)
+
+        post :create, params: { session: { email: user.email }, invite: {invite_type: "CompanyInvite", invite_code: company_invite.invite_code} }
+
+        expect(flash[:success]).to eq("You are now a member of BBBB Inc.")
+        expect(response).to redirect_to(user_path)
+
+        user.reload
+        expect(user.companies.count).to eq(1)
+        expect(user.companies.first.name).to eq("BBBB Inc.")
+
+        company_invite.reload
+        expect(company_invite.status).to eq(CompanyInvite.statuses[:used])
+        expect(company_invite.user_id).to eq(user.id)
+      end
     end
   end
 

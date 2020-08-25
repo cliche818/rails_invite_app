@@ -1,2 +1,4 @@
 default:
   name: ACME Inc.
+new_company:
+  name: BBBB Inc.
