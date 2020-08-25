@@ -1,0 +1,8 @@
+unused_invite:
+  invite_code: "invitation"
+  company: default
+  status: "unused"
+used_invite:
+  invite_code: "invitation"
+  company: default
+  status: "used"  
