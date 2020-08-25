@@ -20,13 +20,16 @@ class UsersController < ApplicationController
       if company_invite.nil?
         flash[:error] = "The company invite does not exist, user registration failed"
         redirect_to action: :new and return
+      elsif company_invite.used?
+        flash[:error] = "The company invite has been used already, user registration failed"
+        redirect_to action: :new and return
       end  
     end  
 
     if @user.save
       session[:user_id] = @user.id
           
-      if company_invite.present? 
+      if company_invite.present?
         company = Company.find_by(id: company_invite.company_id)
         @user.companies << company
         company_invite.update(status: CompanyInvite.statuses[:used], user_id: @user.id)

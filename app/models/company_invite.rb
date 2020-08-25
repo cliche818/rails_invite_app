@@ -8,5 +8,9 @@ class CompanyInvite < ApplicationRecord
 
   def self.generate(company_id, invite_code)
     create(company_id: company_id, invite_code: invite_code, status: CompanyInvite.statuses[:unused])
-  end  
+  end
+
+  def used?
+    status == CompanyInvite.statuses[:used]
+  end
 end  
