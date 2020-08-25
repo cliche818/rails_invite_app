@@ -1,8 +1,8 @@
 unused_invite:
   invite_code: "unused_invitation"
-  company: new_company
+  invitable: new_company (Company)
   status: "unused"
 used_invite:
   invite_code: "used_invitation"
-  company: default
+  invitable: default (Company)
   status: "used"  

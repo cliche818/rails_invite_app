@@ -18,17 +18,6 @@ ActiveRecord::Schema.define(version: 2020_08_24_210133) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "company_invites", force: :cascade do |t|
-    t.integer "company_id", null: false
-    t.integer "user_id"
-    t.string "invite_code", null: false
-    t.string "status", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["company_id"], name: "index_company_invites_on_company_id"
-    t.index ["user_id"], name: "index_company_invites_on_user_id"
-  end
-
   create_table "company_users", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "company_id", null: false
@@ -36,6 +25,18 @@ ActiveRecord::Schema.define(version: 2020_08_24_210133) do
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_company_users_on_company_id"
     t.index ["user_id"], name: "index_company_users_on_user_id"
+  end
+
+  create_table "invites", force: :cascade do |t|
+    t.string "invitable_type"
+    t.integer "invitable_id"
+    t.integer "user_id"
+    t.string "invite_code", null: false
+    t.string "status", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invitable_type", "invitable_id"], name: "index_invites_on_invitable_type_and_invitable_id"
+    t.index ["user_id"], name: "index_invites_on_user_id"
   end
 
   create_table "project_users", force: :cascade do |t|

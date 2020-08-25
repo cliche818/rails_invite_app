@@ -31,9 +31,9 @@ RSpec.describe UsersController, type: :controller do
 
     describe "joining company via company invite" do
       it "adds the company from the invite to the list of companies the user has" do
-        company_invite = company_invites(:unused_invite)
+        company_invite = invites(:unused_invite)
 
-        post :create, params: { user: { name: "Joanne", email: "joanne@test.hoost" }, invite: {invite_type: "CompanyInvite", invite_code: company_invite.invite_code} }
+        post :create, params: { user: { name: "Joanne", email: "joanne@test.hoost" }, invite: {invite_type: "Company", invite_code: company_invite.invite_code} }
 
         expect(flash[:success]).to eq("Welcome! You are now a member of BBBB Inc.")
         expect(response).to redirect_to(user_path)
@@ -43,12 +43,12 @@ RSpec.describe UsersController, type: :controller do
         expect(user.companies.first.name).to eq("BBBB Inc.")
 
         company_invite.reload
-        expect(company_invite.status).to eq(CompanyInvite.statuses[:used])
+        expect(company_invite.status).to eq(Invite.statuses[:used])
         expect(company_invite.user_id).to eq(user.id)
       end
 
       it "should fail user registration if the company invite doesn't exist" do
-        post :create, params: { user: { name: "Joanne", email: "joanne@test.hoost" }, invite: {invite_type: "CompanyInvite", invite_code: "non-existent-invite"} }
+        post :create, params: { user: { name: "Joanne", email: "joanne@test.hoost" }, invite: {invite_type: "Company", invite_code: "non-existent-invite"} }
 
         expect(flash[:error]).to eq("The company invite does not exist, user registration failed")
         expect(response).to redirect_to(new_user_path)
@@ -58,7 +58,7 @@ RSpec.describe UsersController, type: :controller do
       end
       
       it "should fail user registration if the company invite doesn't have the right type" do
-        company_invite = company_invites(:unused_invite)
+        company_invite = invites(:unused_invite)
         post :create, params: { user: { name: "Joanne", email: "joanne@test.hoost" }, invite: {invite_type: "BadInvite", invite_code: company_invite.invite_code} }
 
         expect(flash[:error]).to eq("The invite does not exist, user registration failed")
@@ -69,9 +69,9 @@ RSpec.describe UsersController, type: :controller do
       end
 
       it "should fail user registration if the company invite is used already" do
-        company_invite = company_invites(:used_invite)
+        company_invite = invites(:used_invite)
 
-        post :create, params: { user: { name: "Joanne", email: "joanne@test.hoost" }, invite: {invite_type: "CompanyInvite", invite_code: company_invite.invite_code} }
+        post :create, params: { user: { name: "Joanne", email: "joanne@test.hoost" }, invite: {invite_type: "Company", invite_code: company_invite.invite_code} }
         expect(flash[:error]).to eq("The company invite has been used already, user registration failed")
         expect(response).to redirect_to(new_user_path)
 

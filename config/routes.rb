@@ -4,5 +4,5 @@ Rails.application.routes.draw do
   resource :session, only: [:new, :create, :destroy]
   root to: redirect("/user/new")
 
-  get '/company_invite/:invite_code', to: "company_invites#show"
+  get '/invite/:invite_code', to: "invites#show"
 end
