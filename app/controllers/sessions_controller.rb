@@ -8,10 +8,22 @@ class SessionsController < ApplicationController
   def create
     @user = User.find_by(email: session_params[:email])
 
-    if params.dig(:invite, :invite_type) && params.dig(:invite, :invite_code)
-      company_invite = CompanyInvite.find_by(invite_code: params[:invite][:invite_code])
+    if params.dig(:invite, :invite_type) && params.dig(:invite, :invite_type) != "CompanyInvite"
+      flash[:error] = "Failed to log in because of invalid invite, please try again"
+      redirect_to action: :new and return
     end
 
+    if params.dig(:invite, :invite_type) && params.dig(:invite, :invite_code)
+      company_invite = CompanyInvite.find_by(invite_code: params[:invite][:invite_code])
+
+      if company_invite.nil?
+        flash[:error] = "Failed to log in because of invalid invite, please try again"
+        redirect_to action: :new and return
+      elsif company_invite.used?
+        flash[:error] = "Failed to log in because invite has been used already, please try again"
+        redirect_to action: :new and return
+      end
+    end
 
     if @user
       session[:user_id] = @user.id

@@ -46,6 +46,29 @@ RSpec.describe SessionsController, type: :controller do
         expect(company_invite.status).to eq(CompanyInvite.statuses[:used])
         expect(company_invite.user_id).to eq(user.id)
       end
+
+      it "should fail to log in if the company invite doesn't exist" do
+        post :create, params: { session: { email: user.email }, invite: {invite_type: "CompanyInvite", invite_code: "non-existent-invite"} }
+
+        expect(flash[:error]).to eq("Failed to log in because of invalid invite, please try again")
+        expect(response).to redirect_to(new_session_path)
+      end
+
+      it "should fail to log in if the company invite doesn't have the right type" do
+        company_invite = company_invites(:unused_invite)
+        post :create, params: { session: { email: user.email }, invite: {invite_type: "BadInvite", invite_code: company_invite.invite_code} }
+
+        expect(flash[:error]).to eq("Failed to log in because of invalid invite, please try again")
+        expect(response).to redirect_to(new_session_path)
+      end
+
+      it "should fail to log in if the company invite is used already" do
+        company_invite = company_invites(:used_invite)
+        post :create, params: { session: { email: user.email }, invite: {invite_type: "CompanyInvite", invite_code: company_invite.invite_code} }
+
+        expect(flash[:error]).to eq("Failed to log in because invite has been used already, please try again")
+        expect(response).to redirect_to(new_session_path)
+      end
     end
   end
 
