@@ -42,6 +42,21 @@ RSpec.describe UsersController, type: :controller do
         expect(user.companies.count).to eq(1)
         expect(user.companies.first.name).to eq("ACME Inc.")
       end
+
+      it "should fail user registration if the company invite doesn't exist" do
+        post :create, params: { user: { name: "Joanne", email: "joanne@test.hoost" }, invite: {invite_type: "CompanyInvite", invite_code: "non-existent-invite"} }
+
+        expect(flash[:error]).to eq("The company invite does not exist, user registration failed")
+        expect(response).to redirect_to(new_user_path)
+      end
+      
+      it "should fail user registration if the company invite doesn't have the right type" do
+        company_invite = company_invites(:unused_invite)
+        post :create, params: { user: { name: "Joanne", email: "joanne@test.hoost" }, invite: {invite_type: "BadInvite", invite_code: company_invite.invite_code} }
+
+        expect(flash[:error]).to eq("The invite does not exist, user registration failed")
+        expect(response).to redirect_to(new_user_path)
+      end  
     end  
   end
 

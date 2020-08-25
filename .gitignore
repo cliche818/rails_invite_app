@@ -33,3 +33,4 @@
 .DS_store
 .history/
 .tool-versions
+.idea/
