@@ -29,6 +29,7 @@ class UsersController < ApplicationController
       if company_invite.present? 
         company = Company.find_by(id: company_invite.company_id)
         @user.companies << company
+        company_invite.update(status: CompanyInvite.statuses[:used], user_id: @user.id)
 
         flash[:success] = "Welcome! You are now a member of #{company.name}"
         redirect_to action: :show

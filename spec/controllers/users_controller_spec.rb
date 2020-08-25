@@ -41,6 +41,10 @@ RSpec.describe UsersController, type: :controller do
         user = User.find_by(email: "joanne@test.hoost")
         expect(user.companies.count).to eq(1)
         expect(user.companies.first.name).to eq("ACME Inc.")
+
+        company_invite.reload
+        expect(company_invite.status).to eq(CompanyInvite.statuses[:used])
+        expect(company_invite.user_id).to eq(user.id)
       end
 
       it "should fail user registration if the company invite doesn't exist" do

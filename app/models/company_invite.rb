@@ -1,5 +1,6 @@
 class CompanyInvite < ApplicationRecord
   belongs_to :company
+  belongs_to :user, optional: true
 
   validates :invite_code, presence: true
 
