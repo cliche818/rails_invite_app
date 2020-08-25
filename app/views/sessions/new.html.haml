@@ -2,11 +2,19 @@
 
 %p Please enter your email to login
 
+- signup_path = params["invite_type"] && params["invite_code"] ? new_user_path(invite_type: params["invite_type"], invite_code: params["invite_code"]) : new_user_path
+
 .row
   .col
     = form_with scope: :session, url: session_path do |f|
       .form-group
         = f.text_field :email, class: "form-control"
+      - if params["invite_type"] && params["invite_code"]
+        %p You are using an invite:
+        .form-group
+          %input#invite_invite_type{name: "invite[invite_type]", type: "hidden", value: "CompanyInvite"}
+        .form-group
+          %input#invite_invite_code{name: "invite[invite_code]", class: "form-control", value: params[:invite_code]}
       = f.submit "Login", class: "btn btn-primary"
-      = link_to "or sign up", new_user_path, class: "btn btn-link"
+      = link_to "or sign up", signup_path, class: "btn btn-link"
   .col

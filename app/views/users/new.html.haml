@@ -2,6 +2,8 @@
 
 %p Please enter your name and email to sign up
 
+- login_path = params["invite_type"] && params["invite_code"] ? new_session_path(invite_type: params["invite_type"], invite_code: params["invite_code"]) : new_session_path
+
 .row
   .col
     = form_with model: @user, url: user_path do |f|
@@ -17,6 +19,6 @@
         .form-group
           %input#invite_invite_code{name: "invite[invite_code]", class: "form-control", value: params[:invite_code]}
       = f.submit "Signup", class: "btn btn-primary"
-      = link_to "or login", new_session_path, class: "btn btn-link"
+      = link_to "or login", login_path, class: "btn btn-link"
 
   .col
