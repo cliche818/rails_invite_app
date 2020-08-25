@@ -11,9 +11,8 @@ class UsersController < ApplicationController
 
     if @user.save
       session[:user_id] = @user.id
-      byebug
 
-      if params[:invite][:invite_type] && params[:invite][:invite_code]
+      if params.dig(:invite, :invite_type) && params.dig(:invite, :invite_code)
         company_invite = CompanyInvite.find_by(invite_code: params[:invite][:invite_code])
         company = Company.find_by(id: company_invite.company_id)
         @user.companies << company
