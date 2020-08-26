@@ -2,7 +2,7 @@ class Invite < ApplicationRecord
   belongs_to :invitable, polymorphic: true
   belongs_to :user, optional: true
 
-  validates :invite_code, presence: true
+  validates :invite_code, presence: true, uniqueness: true
 
   enum status: { unused: "unused", used: "used" }
 

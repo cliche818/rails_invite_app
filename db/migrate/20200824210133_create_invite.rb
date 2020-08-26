@@ -7,5 +7,7 @@ class CreateInvite < ActiveRecord::Migration[5.2]
       t.string :status, null: false
       t.timestamps
     end
+
+    add_index :invites, :invite_code, unique: true
   end
 end
