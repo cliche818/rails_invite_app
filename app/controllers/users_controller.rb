@@ -9,12 +9,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
 
-    if params.dig(:invite, :invite_type) && !["Company", "Project"].include?(params.dig(:invite, :invite_type))
-      flash[:error] = "The invite does not exist, user registration failed"
-      redirect_to action: :new and return
-    end  
-
-    if params.dig(:invite, :invite_type) && params.dig(:invite, :invite_code)
+    if params.dig(:invite, :invite_code)
       invite = Invite.find_by(invite_code: params[:invite][:invite_code])
 
       if invite.nil?

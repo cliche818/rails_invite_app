@@ -8,13 +8,8 @@ class SessionsController < ApplicationController
   def create
     @user = User.find_by(email: session_params[:email])
 
-    if params.dig(:invite, :invite_type) && !["Company", "Project"].include?(params.dig(:invite, :invite_type))
-      flash[:error] = "Failed to log in because of invalid invite, please try again"
-      redirect_to action: :new and return
-    end
-
-    if params.dig(:invite, :invite_type) && params.dig(:invite, :invite_code)
-      invite = Invite.find_by(invite_code: params[:invite][:invite_code], invitable_type: params[:invite][:invite_type])
+    if params.dig(:invite, :invite_code)
+      invite = Invite.find_by(invite_code: params[:invite][:invite_code])
 
       if invite.nil?
         flash[:error] = "Failed to log in because of invalid invite, please try again"

@@ -13,6 +13,6 @@
   %p This is an #{@invitable.class.name} invite for #{@invitable.name}!
 
   %p Please use the following options to join:
-  = link_to "sign up", new_user_path(invite_type: @invitable.class.name, invite_code: @invite.invite_code), class: "btn btn-primary"
+  = link_to "sign up", new_user_path(invite_code: @invite.invite_code), class: "btn btn-primary"
   or
-  = link_to "log in", new_session_path(invite_type: @invitable.class.name, invite_code: @invite.invite_code), class: "btn btn-primary"
+  = link_to "log in", new_session_path(invite_code: @invite.invite_code), class: "btn btn-primary"

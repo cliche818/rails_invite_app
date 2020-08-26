@@ -33,7 +33,7 @@ RSpec.describe SessionsController, type: :controller do
       it "adds the company from the invite to the list of companies the user has" do
         company_invite = invites(:unused_company_invite)
 
-        post :create, params: { session: { email: user.email }, invite: {invite_type: "Company", invite_code: company_invite.invite_code} }
+        post :create, params: { session: { email: user.email }, invite: {invite_code: company_invite.invite_code} }
 
         expect(flash[:success]).to eq("You are now a member of BBBB Inc.")
         expect(response).to redirect_to(user_path)
@@ -51,7 +51,7 @@ RSpec.describe SessionsController, type: :controller do
         company_invite = invites(:unused_company_invite)
         user.companies << company_invite.invitable
 
-        post :create, params: { session: { email: user.email }, invite: {invite_type: "Company", invite_code: company_invite.invite_code} }
+        post :create, params: { session: { email: user.email }, invite: {invite_code: company_invite.invite_code} }
 
         expect(flash[:error]).to eq("You are already a member of BBBB Inc.")
         expect(response).to redirect_to(user_path)
@@ -69,7 +69,7 @@ RSpec.describe SessionsController, type: :controller do
       it "adds the project from the invite to the list of projects the user has" do
         invite = invites(:unused_project_invite)
 
-        post :create, params: { session: { email: user.email }, invite: {invite_type: "Project", invite_code: invite.invite_code} }
+        post :create, params: { session: { email: user.email }, invite: {invite_code: invite.invite_code} }
 
         expect(flash[:success]).to eq("You are now a member of Highway 400")
         expect(response).to redirect_to(user_path)
@@ -87,7 +87,7 @@ RSpec.describe SessionsController, type: :controller do
         invite = invites(:unused_project_invite)
         user.projects << invite.invitable
 
-        post :create, params: { session: { email: user.email }, invite: {invite_type: "Project", invite_code: invite.invite_code} }
+        post :create, params: { session: { email: user.email }, invite: {invite_code: invite.invite_code} }
 
         expect(flash[:error]).to eq("You are already a member of Highway 400")
         expect(response).to redirect_to(user_path)
@@ -103,15 +103,7 @@ RSpec.describe SessionsController, type: :controller do
 
     describe "error cases for invites" do
       it "should fail to log in if the company invite doesn't exist" do
-        post :create, params: { session: { email: user.email }, invite: {invite_type: "Company", invite_code: "non-existent-invite"} }
-
-        expect(flash[:error]).to eq("Failed to log in because of invalid invite, please try again")
-        expect(response).to redirect_to(new_session_path)
-      end
-
-      it "should fail to log in if the company invite doesn't have the right type" do
-        company_invite = invites(:unused_company_invite)
-        post :create, params: { session: { email: user.email }, invite: {invite_type: "BadInvite", invite_code: company_invite.invite_code} }
+        post :create, params: { session: { email: user.email }, invite: {invite_code: "non-existent-invite"} }
 
         expect(flash[:error]).to eq("Failed to log in because of invalid invite, please try again")
         expect(response).to redirect_to(new_session_path)
@@ -119,7 +111,7 @@ RSpec.describe SessionsController, type: :controller do
 
       it "should fail to log in if the company invite is used already" do
         company_invite = invites(:used_company_invite)
-        post :create, params: { session: { email: user.email }, invite: {invite_type: "Company", invite_code: company_invite.invite_code} }
+        post :create, params: { session: { email: user.email }, invite: {invite_code: company_invite.invite_code} }
 
         expect(flash[:error]).to eq("Failed to log in because invite has been used already, please try again")
         expect(response).to redirect_to(new_session_path)
