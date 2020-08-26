@@ -1,4 +1,6 @@
-- if @invite.used?
+- if @invite.nil?
+  %p There is no such invite
+- elsif @invite.used?
   %p This is an #{@invitable.class.name} invite for #{@invitable.name}, but has already been used.
 - elsif session[:user_id].present?
   %p This is an #{@invitable.class.name} invite for #{@invitable.name}!
