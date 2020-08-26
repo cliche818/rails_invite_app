@@ -1,5 +1,9 @@
-%p This is an #{@invitable.class.name} invite for #{@invitable.name}!
+- if @invite.used?
+  %p This is an #{@invitable.class.name} invite for #{@invitable.name}, but has already been used.
+- else
+  %p This is an #{@invitable.class.name} invite for #{@invitable.name}!
 
-%p Please sign in to join!
-= link_to "sign up", new_user_path(invite_type: @invitable.class.name, invite_code: @invite.invite_code), class: "btn btn-link"
-= link_to "or log in", new_session_path(invite_type: @invitable.class.name, invite_code: @invite.invite_code), class: "btn btn-link"
+  %p Please use the following options to join:
+  = link_to "sign up", new_user_path(invite_type: @invitable.class.name, invite_code: @invite.invite_code), class: "btn btn-primary"
+  or
+  = link_to "log in", new_session_path(invite_type: @invitable.class.name, invite_code: @invite.invite_code), class: "btn btn-primary"
