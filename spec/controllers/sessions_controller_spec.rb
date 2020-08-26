@@ -47,6 +47,25 @@ RSpec.describe SessionsController, type: :controller do
         expect(company_invite.user_id).to eq(user.id)
       end
 
+      it "should not add company to a user that already has the company, but logs in the user" do
+        company_invite = invites(:unused_company_invite)
+        user.companies << company_invite.invitable
+
+        post :create, params: { session: { email: user.email }, invite: {invite_type: "Company", invite_code: company_invite.invite_code} }
+
+        expect(flash[:error]).to eq("You are already a member of BBBB Inc.")
+        expect(response).to redirect_to(user_path)
+
+        user.reload
+        expect(user.companies.count).to eq(1)
+
+        company_invite.reload
+        expect(company_invite.status).to eq(Invite.statuses[:unused])
+        expect(company_invite.user_id).to eq(nil)
+      end
+    end
+
+    describe "joining project via project invite" do
       it "adds the project from the invite to the list of projects the user has" do
         invite = invites(:unused_project_invite)
 
@@ -62,6 +81,23 @@ RSpec.describe SessionsController, type: :controller do
         invite.reload
         expect(invite.status).to eq(Invite.statuses[:used])
         expect(invite.user_id).to eq(user.id)
+      end
+
+      it "should not add project to a user that already has the project, but logs in the user" do
+        invite = invites(:unused_project_invite)
+        user.projects << invite.invitable
+
+        post :create, params: { session: { email: user.email }, invite: {invite_type: "Project", invite_code: invite.invite_code} }
+
+        expect(flash[:error]).to eq("You are already a member of Highway 400")
+        expect(response).to redirect_to(user_path)
+
+        user.reload
+        expect(user.projects.count).to eq(1)
+
+        invite.reload
+        expect(invite.status).to eq(Invite.statuses[:unused])
+        expect(invite.user_id).to eq(nil)
       end
     end
 

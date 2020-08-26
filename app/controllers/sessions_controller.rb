@@ -30,9 +30,19 @@ class SessionsController < ApplicationController
 
       if invite.present?
         if invite.invitable_type == "Company"
-          @user.companies << invite.invitable
+          if @user.companies.exists?(invite.invitable_id)
+            flash[:error] = "You are already a member of #{invite.invitable.name}"
+            redirect_to user_path and return
+          else
+            @user.companies << invite.invitable
+          end
         elsif invite.invitable_type == "Project"
-          @user.projects << invite.invitable
+          if @user.projects.exists?(invite.invitable_id)
+            flash[:error] = "You are already a member of #{invite.invitable.name}"
+            redirect_to user_path and return
+          else
+            @user.projects << invite.invitable
+          end
         end
 
         invite.update(status: Invite.statuses[:used], user_id: @user.id)
