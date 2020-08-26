@@ -42,3 +42,4 @@ Run `rake`
 1) figure out how to extract the similar code for adding a project/company in session_controller/new_controller/invite_controller
     - a possible solution would be a class that will return true/false if it was able to add the company/project and an error message for
     the controller to match and return the correct flash message, but this doesn't really reduce the number of if/else branche in the controllers
+2) handle if the user fails to sign up / log in with a invite code, the subsequent page does not have the invite code anymore (need to pass the invite code param for redirect)
