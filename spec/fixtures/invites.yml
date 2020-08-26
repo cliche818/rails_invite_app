@@ -1,8 +1,16 @@
-unused_invite:
+unused_company_invite:
   invite_code: "unused_invitation"
   invitable: new_company (Company)
   status: "unused"
-used_invite:
+used_company_invite:
   invite_code: "used_invitation"
   invitable: default (Company)
-  status: "used"  
+  status: "used"
+unused_project_invite:
+  invite_code: "join_project"
+  invitable: new_project (Project)
+  status: "unused"
+used_project_invite:
+  invite_code: "joined_project_already"
+  invitable: default (Project)
+  status: "used"

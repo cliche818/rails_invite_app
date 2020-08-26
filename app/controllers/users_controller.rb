@@ -9,19 +9,19 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
 
-    if params.dig(:invite, :invite_type) && params.dig(:invite, :invite_type) != "Company"
+    if params.dig(:invite, :invite_type) && !["Company", "Project"].include?(params.dig(:invite, :invite_type))
       flash[:error] = "The invite does not exist, user registration failed"
       redirect_to action: :new and return
     end  
 
     if params.dig(:invite, :invite_type) && params.dig(:invite, :invite_code)
-      company_invite = Invite.find_by(invite_code: params[:invite][:invite_code])
+      invite = Invite.find_by(invite_code: params[:invite][:invite_code])
 
-      if company_invite.nil?
-        flash[:error] = "The company invite does not exist, user registration failed"
+      if invite.nil?
+        flash[:error] = "The invite does not exist, user registration failed"
         redirect_to action: :new and return
-      elsif company_invite.used?
-        flash[:error] = "The company invite has been used already, user registration failed"
+      elsif invite.used?
+        flash[:error] = "The invite has been used already, user registration failed"
         redirect_to action: :new and return
       end  
     end  
@@ -29,12 +29,15 @@ class UsersController < ApplicationController
     if @user.save
       session[:user_id] = @user.id
           
-      if company_invite.present?
-        company = Company.find_by(id: company_invite.invitable_id)
-        @user.companies << company
-        company_invite.update(status: Invite.statuses[:used], user_id: @user.id)
+      if invite.present?
+        if invite.invitable_type == "Company"
+          @user.companies << invite.invitable
+        elsif invite.invitable_type == "Project"
+          @user.projects << invite.invitable
+        end
+        invite.update(status: Invite.statuses[:used], user_id: @user.id)
 
-        flash[:success] = "Welcome! You are now a member of #{company.name}"
+        flash[:success] = "Welcome! You are now a member of #{invite.invitable.name}"
         redirect_to action: :show
       else
         flash[:success] = "Thank you for signing up"

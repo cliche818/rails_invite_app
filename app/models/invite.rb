@@ -7,10 +7,8 @@ class Invite < ApplicationRecord
   enum status: { unused: "unused", used: "used" }
 
   def self.generate(invite_code, invitable)
-    if invitable.class.name == "Company"
+    if invitable.class.name == "Company" || invitable.class.name == "Project"
       create(invitable_id: invitable.id, invitable_type: invitable.class.name, invite_code: invite_code, status: Invite.statuses[:unused])
-    else
-
     end
   end
 

@@ -1,5 +1,5 @@
 %p This is an #{@invitable.class.name} invite for #{@invitable.name}!
 
 %p Please sign in to join!
-= link_to "sign up", new_user_path(invite_type: 'Company', invite_code: @invite.invite_code), class: "btn btn-link"
-= link_to "or log in", new_session_path(invite_type: 'Company', invite_code: @invite.invite_code), class: "btn btn-link"
+= link_to "sign up", new_user_path(invite_type: @invitable.class.name, invite_code: @invite.invite_code), class: "btn btn-link"
+= link_to "or log in", new_session_path(invite_type: @invitable.class.name, invite_code: @invite.invite_code), class: "btn btn-link"

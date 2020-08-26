@@ -31,7 +31,7 @@ RSpec.describe SessionsController, type: :controller do
 
     describe "joining company via company invite" do
       it "adds the company from the invite to the list of companies the user has" do
-        company_invite = invites(:unused_invite)
+        company_invite = invites(:unused_company_invite)
 
         post :create, params: { session: { email: user.email }, invite: {invite_type: "Company", invite_code: company_invite.invite_code} }
 
@@ -55,7 +55,7 @@ RSpec.describe SessionsController, type: :controller do
       end
 
       it "should fail to log in if the company invite doesn't have the right type" do
-        company_invite = invites(:unused_invite)
+        company_invite = invites(:unused_company_invite)
         post :create, params: { session: { email: user.email }, invite: {invite_type: "BadInvite", invite_code: company_invite.invite_code} }
 
         expect(flash[:error]).to eq("Failed to log in because of invalid invite, please try again")
@@ -63,7 +63,7 @@ RSpec.describe SessionsController, type: :controller do
       end
 
       it "should fail to log in if the company invite is used already" do
-        company_invite = invites(:used_invite)
+        company_invite = invites(:used_company_invite)
         post :create, params: { session: { email: user.email }, invite: {invite_type: "Company", invite_code: company_invite.invite_code} }
 
         expect(flash[:error]).to eq("Failed to log in because invite has been used already, please try again")
