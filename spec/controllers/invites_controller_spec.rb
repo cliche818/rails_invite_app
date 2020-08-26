@@ -25,6 +25,22 @@ RSpec.describe InvitesController, type: :controller do
         expect(company_invite.status).to eq(Invite.statuses[:used])
         expect(company_invite.user_id).to eq(user.id)
       end
+
+      it "should not use the invite if the user is already in the company" do
+        company_invite = invites(:unused_company_invite)
+        user.companies << company_invite.invitable
+
+        post :join_invite, params: { invite: {invite_code: company_invite.invite_code} }
+
+        expect(flash[:error]).to eq("You are already a member of BBBB Inc.")
+        expect(response).to redirect_to(user_path)
+
+        user.reload
+        expect(user.companies.count).to eq(1)
+
+        company_invite.reload
+        expect(company_invite.status).to eq(Invite.statuses[:unused])
+      end
     end
 
     describe "joining projects" do
@@ -42,6 +58,22 @@ RSpec.describe InvitesController, type: :controller do
         project_invite.reload
         expect(project_invite.status).to eq(Invite.statuses[:used])
         expect(project_invite.user_id).to eq(user.id)
+      end
+
+      it "should not use the invite if the user is already in the project" do
+        project_invite = invites(:unused_project_invite)
+        user.projects << project_invite.invitable
+
+        post :join_invite, params: { invite: {invite_code: project_invite.invite_code} }
+
+        expect(flash[:error]).to eq("You are already a member of Highway 400")
+        expect(response).to redirect_to(user_path)
+
+        user.reload
+        expect(user.projects.count).to eq(1)
+
+        project_invite.reload
+        expect(project_invite.status).to eq(Invite.statuses[:unused])
       end
     end
   end
