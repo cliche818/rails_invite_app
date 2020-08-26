@@ -15,7 +15,7 @@
       - if params["invite_code"]
         %p You are using an invite:
         .form-group
-          %input#invite_invite_code{name: "invite[invite_code]", class: "form-control", value: params[:invite_code]}
+          %input#invite_invite_code{name: "invite[invite_code]", class: "form-control", value: params[:invite_code], readonly: "readonly"}
       = f.submit "Signup", class: "btn btn-primary"
       = link_to "or login", login_path, class: "btn btn-link"
 

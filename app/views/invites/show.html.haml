@@ -7,7 +7,7 @@
       = form_with scope: :invite, url: join_invite_path do |f|
         %p You are using an invite:
         .form-group
-          = f.text_field :invite_code, class: "form-control", value: @invite.invite_code
+          = f.text_field :invite_code, class: "form-control", value: @invite.invite_code, readonly: "readonly"
         = f.submit "Join", class: "btn btn-primary"
 - else
   %p This is an #{@invitable.class.name} invite for #{@invitable.name}!
