@@ -8,18 +8,18 @@ class SessionsController < ApplicationController
   def create
     @user = User.find_by(email: session_params[:email])
 
-    if params.dig(:invite, :invite_type) && params.dig(:invite, :invite_type) != "Company"
+    if params.dig(:invite, :invite_type) && !["Company", "Project"].include?(params.dig(:invite, :invite_type))
       flash[:error] = "Failed to log in because of invalid invite, please try again"
       redirect_to action: :new and return
     end
 
     if params.dig(:invite, :invite_type) && params.dig(:invite, :invite_code)
-      company_invite = Invite.find_by(invite_code: params[:invite][:invite_code], invitable_type: params[:invite][:invite_type])
+      invite = Invite.find_by(invite_code: params[:invite][:invite_code], invitable_type: params[:invite][:invite_type])
 
-      if company_invite.nil?
+      if invite.nil?
         flash[:error] = "Failed to log in because of invalid invite, please try again"
         redirect_to action: :new and return
-      elsif company_invite.used?
+      elsif invite.used?
         flash[:error] = "Failed to log in because invite has been used already, please try again"
         redirect_to action: :new and return
       end
@@ -28,12 +28,16 @@ class SessionsController < ApplicationController
     if @user
       session[:user_id] = @user.id
 
-      if company_invite.present?
-        company = Company.find_by(id: company_invite.invitable_id)
-        @user.companies << company
-        company_invite.update(status: Invite.statuses[:used], user_id: @user.id)
+      if invite.present?
+        if invite.invitable_type == "Company"
+          @user.companies << invite.invitable
+        elsif invite.invitable_type == "Project"
+          @user.projects << invite.invitable
+        end
 
-        flash[:success] = "You are now a member of #{company.name}"
+        invite.update(status: Invite.statuses[:used], user_id: @user.id)
+
+        flash[:success] = "You are now a member of #{invite.invitable.name}"
         redirect_to user_path
       else
         flash[:success] = "You are logged in"

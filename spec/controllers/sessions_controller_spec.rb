@@ -47,6 +47,25 @@ RSpec.describe SessionsController, type: :controller do
         expect(company_invite.user_id).to eq(user.id)
       end
 
+      it "adds the project from the invite to the list of projects the user has" do
+        invite = invites(:unused_project_invite)
+
+        post :create, params: { session: { email: user.email }, invite: {invite_type: "Project", invite_code: invite.invite_code} }
+
+        expect(flash[:success]).to eq("You are now a member of Highway 400")
+        expect(response).to redirect_to(user_path)
+
+        user.reload
+        expect(user.projects.count).to eq(1)
+        expect(user.projects.first.name).to eq("Highway 400")
+
+        invite.reload
+        expect(invite.status).to eq(Invite.statuses[:used])
+        expect(invite.user_id).to eq(user.id)
+      end
+    end
+
+    describe "error cases for invites" do
       it "should fail to log in if the company invite doesn't exist" do
         post :create, params: { session: { email: user.email }, invite: {invite_type: "Company", invite_code: "non-existent-invite"} }
 
