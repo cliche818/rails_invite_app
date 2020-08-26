@@ -1,5 +1,14 @@
 - if @invite.used?
   %p This is an #{@invitable.class.name} invite for #{@invitable.name}, but has already been used.
+- elsif session[:user_id].present?
+  %p This is an #{@invitable.class.name} invite for #{@invitable.name}!
+  .row
+    .col
+      = form_with scope: :invite, url: join_invite_path do |f|
+        %p You are using an invite:
+        .form-group
+          = f.text_field :invite_code, class: "form-control", value: @invite.invite_code
+        = f.submit "Join", class: "btn btn-primary"
 - else
   %p This is an #{@invitable.class.name} invite for #{@invitable.name}!
 

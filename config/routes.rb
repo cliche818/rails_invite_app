@@ -5,4 +5,5 @@ Rails.application.routes.draw do
   root to: redirect("/user/new")
 
   get '/invite/:invite_code', to: "invites#show"
+  post '/join_invite', to: "invites#join_invite"
 end
